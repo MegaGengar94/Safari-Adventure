@@ -25,7 +25,7 @@ public class SafariAdventure {
         Random random = new Random();
         int totalPoints = 0;
 
-        // Define areas and their events
+        // Location of the difficulties and actions
         Event[][] areas = {
             // Jungle, Very Easy
             {
@@ -66,7 +66,7 @@ public class SafariAdventure {
         };
         String[] areaNames = {"Jungle", "River", "Desert", "Mountains"};
 
-        
+        System.out.println("Welcome to the safari adventure. Here you can look for resources, meet people and friends, and find treasure! Remember, the higher risk the higher the reward.");
 
         // for loop for 5 days
         for (int day = 1; day <= 5; day++) {
@@ -76,7 +76,7 @@ public class SafariAdventure {
 
             // do...while for area selection
             do {
-                System.out.print("Enter Jungle, River, Desert, or Mountains: ");
+                System.out.print("Enter Jungle(Very Easy), River(Easy), Desert(Intermeditate), or Mountains(Hard): ");
                 area = scanner.nextLine().trim();
                 areaIndex = -1;
                 for (int i = 0; i < areaNames.length; i++) {
@@ -136,12 +136,14 @@ public class SafariAdventure {
 
         scanner.close();
 
-        // Summary
+        // Summary whether the player wins or loses
         System.out.println("\nAdventure Summary:");
         System.out.println("Total points collected: " + totalPoints);
+        //Win
         if (totalPoints >= 100) {
             System.out.println("You survived and completed the adventure successfully!");
         } else {
+            //lose
             System.out.println("You survived all 5 days but did not collect enough points to complete the adventure.");
         }
     }
