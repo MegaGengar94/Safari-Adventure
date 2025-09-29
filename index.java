@@ -1,135 +1,148 @@
-#include <iostream>
-#include <string>
-#include <cstdlib>
-#include <ctime>
+import java.util.Scanner;
+import java.util.Random;
 
-using namespace std;
+public class SafariAdventure {
+    static class Event {
+        String type;
+        String name;
+        int points;
+        boolean dangerous;
 
-// Function to check if the input area is valid
-bool isValidArea(const string& area) {
-    return area.compare("Jungle") == 0 || area.compare("River") == 0 ||
-           area.compare("Desert") == 0 || area.compare("Mountains") == 0;
-}
-
-int main() {
-    srand(time(0)); // Seed random number generator
-    int totalPoints = 0;
-    bool survived = true; // Tracks if player survives all days
-    string area, input;
-
-    cout << "🌄 Welcome to Safari Adventure!" << endl << endl;
-
-    // for Loop: 5 days of exploration
-    for (int day = 1; day <= 5; day++) {
-        cout << "Day " << day << ":" << endl;
-
-        // do...while Loop: Choose a valid area
-        do {
-            cout << "Where would you like to explore? (Jungle, River, Desert, Mountains): ";
-            getline(cin, area, '\n');
-            if (!isValidArea(area)) {
-                cout << "Invalid area. Please choose again." << endl;
-            }
-        } while (!isValidArea(area));
-
-        cout << "\nYou chose: " << area << endl;
-        cout << "Exploring " << area << "..." << endl;
-
-        int events = 0; // Track number of events (up to 3)
-        int dailyPoints = 0; // Points for the current day
-        bool dayEndedEarly = false; // Flag for early day termination
-
-        // while Loop: Simulate up to 3 events in the area
-        while (events < 3 && !dayEndedEarly) {
-            events++;
-            cout << "\nEvent " << events << ": ";
-
-            // Random event (0: bird, 1: resources, 2: animal, 3: weather)
-            int eventType = rand() % 4;
-            int points = 0;
-            string eventDesc;
-
-            // Determine event based on type
-            if (eventType == 0) {
-                eventDesc = "You spotted a bird. 🐦";
-                cout << eventDesc << endl;
-                cout << "(Too small to track. Moving on.)" << endl;
-                continue; // Skip to next event
-            } else if (eventType == 1) {
-                // Resource event based on area
-                if (area.compare("Jungle") == 0) {
-                    eventDesc = "You found edible berries! (+15 points)";
-                    points = 15;
-                } else if (area.compare("River") == 0) {
-                    eventDesc = "You caught some fish! (+20 points)";
-                    points = 20;
-                } else if (area.compare("Desert") == 0) {
-                    eventDesc = "You found an oasis with water! (+10 points)";
-                    points = 10;
-                } else if (area.compare("Mountains") == 0) {
-                    eventDesc = "You mined some rare minerals! (+25 points)";
-                    points = 25;
-                }
-            } else if (eventType == 2) {
-                // Dangerous animal event
-                string animal = (area.compare("Jungle") == 0 || area.compare("Mountains") == 0) ? "lion" : "crocodile";
-                eventDesc = "A " + animal + " appears! 😱";
-                cout << eventDesc << endl;
-                cout << "Type 'run' to escape: ";
-                getline(cin, input, '\n');
-                if (input.compare("run") == 0) {
-                    cout << "You escaped safely, ending the day early." << endl;
-                    dayEndedEarly = true; // Break the event loop
-                    break;
-                } else {
-                    cout << "You didn't escape in time! Adventure ends." << endl;
-                    survived = false;
-                    dayEndedEarly = true;
-                    break;
-                }
-            } else {
-                // Weather hazard event
-                if (area.compare("Desert") == 0) {
-                    eventDesc = "A sandstorm hits! (-10 points)";
-                    points = -10;
-                } else if (area.compare("River") == 0) {
-                    eventDesc = "Heavy rain floods your path! (-5 points)";
-                    points = -5;
-                } else {
-                    eventDesc = "A sudden storm slows you down! (-8 points)";
-                    points = -8;
-                }
-            }
-
-            // If not a bird event, print description and update points
-            if (eventType != 0) {
-                cout << eventDesc << endl;
-                dailyPoints += points;
-                totalPoints += points;
-            }
-
-            // Stop if enough resources (20+ points) for the day
-            if (dailyPoints >= 20) {
-                cout << "Enough resources collected for today!" << endl;
-                break;
-            }
+        Event(String type, String name, int points, boolean dangerous) {
+            this.type = type;
+            this.name = name;
+            this.points = points;
+            this.dangerous = dangerous;
         }
 
-        // Day summary
-        cout << "\nDay Summary: " << dailyPoints << " points earned." << endl;
-        cout << "-----------------------------------" << endl << endl;
-
-        // If player didn't survive, end the adventure
-        if (!survived) {
-            cout << "☠️ Adventure Over! You didn't survive." << endl;
-            cout << "Total points collected: " << totalPoints << endl;
-            return 0;
+        Event(String type, String name, int points) {
+            this(type, name, points, false);
         }
     }
 
-    // Final summary
-    cout << "🎉 Safari Complete! You collected " << totalPoints << " points!" << endl;
-    cout << "You survived and completed the adventure!" << endl;
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+        int totalPoints = 0;
 
-    return 0;
+        // Define areas and their events
+        Event[][] areas = {
+            // Jungle, Very Easy
+            {
+                new Event("resource", "Found a rare fruit", 5),
+                new Event("resource", "Found undiscovered medicial herbs", 5),
+                new Event("animal", "Befriended a loyal pet monkey", 10),
+                new Event("dangrous", "Attacked by a fiesty baby tiger", 0, true),
+                new Event("hazard", "Fell on spikey brambles", -10),
+                new Event("harmless", "Saw a little parakeet", 0)
+            },
+            // River, Easy
+            {
+                new Event("resource", "You found fresh food and water for your journey", 10),
+                new Event("resources", "You spoke with an old man about legends and he gave you a map", 15),
+                new Event("treasure", "You manage to pan for a bit of gold", 20),
+                new Event("dangerous", "encountered a crocodile", -5, true),
+                new Event("hazard", "faced a sudden flood", -10),
+                new Event("harmless", "had a harmless bird sighting", 0)
+            },
+            // Desert, Intermediate
+            {
+                new Event("resource", "You traded with a merchant caravan", 30),
+                new Event("treasure", "You found a bit of ancient gold", 40),
+                new Event("hazard", "You were bit by a sacarab you didn't see coming", -10),
+                new Event("dangerous", "There was a mummy you found while trasure hunting", -10, true),
+                new Event("hazard", "got caught in a sandstorm", -20),
+                new Event("harmless", "had a harmless bird sighting", 0)
+            },
+            // Mountains, Hard
+            {
+                new Event("hazard", "You fell down a bit of the mountain and lost some progress along with being hurt", -30),
+                new Event("hazard", "There was a boulder that you nearly dodged but got hurt", -35),
+                new Event("hazard", "You got caught by an ancient trap and got hurt badly", -40),
+                new Event("dangerous", "There is a pack of scary ape creatures", -20, true),
+                new Event("treasure", "Your found the legendary treasure of the mountain", 500),
+                new Event("harmless", "had a harmless eagle sighting", 0)
+            }
+        };
+        String[] areaNames = {"Jungle", "River", "Desert", "Mountains"};
+
+        
+
+        // for loop for 5 days
+        for (int day = 1; day <= 5; day++) {
+            System.out.println("\nDay " + day + ": Choose your exploration area.");
+            String area;
+            int areaIndex;
+
+            // do...while for area selection
+            do {
+                System.out.print("Enter Jungle, River, Desert, or Mountains: ");
+                area = scanner.nextLine().trim();
+                areaIndex = -1;
+                for (int i = 0; i < areaNames.length; i++) {
+                    if (areaNames[i].equalsIgnoreCase(area)) {
+                        areaIndex = i;
+                        break;
+                    }
+                }
+                if (areaIndex == -1) {
+                    System.out.println("Invalid area. Please try again.");
+                }
+            } while (areaIndex == -1);
+
+            System.out.println("Exploring the " + areaNames[areaIndex] + "...");
+
+            int eventCount = 0;
+            int dayPoints = 0;
+
+            // while loop for up to 3 events
+            while (eventCount < 3) {
+                Event randomEvent = areas[areaIndex][random.nextInt(areas[areaIndex].length)];
+                System.out.println("\nYou " + randomEvent.name + ".");
+
+                if (randomEvent.type.equals("harmless")) {
+                    System.out.println("Nothing interesting, continuing to the next event.");
+                    continue; // Skip harmless events
+                }
+
+                eventCount++;
+
+                if (randomEvent.dangerous) {
+                    System.out.print("Dangerous animal! Type 'run' to escape: ");
+                    String action = scanner.nextLine().trim();
+                    if (action.equalsIgnoreCase("run")) {
+                        System.out.println("You escaped safely, ending today's exploration.");
+                        break; // Escape dangerous animal
+                    } else {
+                        System.out.println("You didn't escape in time and got injured.");
+                        totalPoints -= 20;
+                    }
+                } else {
+                    totalPoints += randomEvent.points;
+                    System.out.println("Points adjustment: " + randomEvent.points);
+                    if (randomEvent.points > 0) {
+                        dayPoints += randomEvent.points;
+                    }
+                }
+
+                if (dayPoints >= 25) {
+                    System.out.println("You have collected enough resources for today.");
+                    break; // End day if enough resources collected
+                }
+            }
+
+            System.out.println("End of Day " + day + ". Current total points: " + totalPoints);
+        }
+
+        scanner.close();
+
+        // Summary
+        System.out.println("\nAdventure Summary:");
+        System.out.println("Total points collected: " + totalPoints);
+        if (totalPoints >= 100) {
+            System.out.println("You survived and completed the adventure successfully!");
+        } else {
+            System.out.println("You survived all 5 days but did not collect enough points to complete the adventure.");
+        }
+    }
 }
